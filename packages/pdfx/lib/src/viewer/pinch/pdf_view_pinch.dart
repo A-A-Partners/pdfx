@@ -215,7 +215,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
           final initialPage = _controller.initialPage;
           if (initialPage != 1) {
             final m =
-                _controller.calculatePageFitMatrix(pageNumber: initialPage);
+            _controller.calculatePageFitMatrix(pageNumber: initialPage);
             if (m != null) {
               _controller.value = m;
             }
@@ -327,7 +327,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
       final m = _controller.value;
       final r = m.row0[0];
       final exposed = Rect.fromLTWH(-m.row0[3], -m.row1[3],
-              _lastViewSize!.width, _lastViewSize!.height)
+          _lastViewSize!.width, _lastViewSize!.height)
           .inflate(_extraBufferAroundView);
 
       final pageRectZoomed = Rect.fromLTRB(page.rect!.left * r,
@@ -459,7 +459,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
   }
 
   final _realSizeOverlayUpdateBufferDuration =
-      const Duration(milliseconds: 100);
+  const Duration(milliseconds: 100);
 
   void _needRealSizeOverlayUpdate() {
     _cancelLastRealSizeUpdate();
@@ -481,13 +481,13 @@ class _PdfViewPinchState extends State<PdfViewPinch>
   }
 
   static Widget _builder(
-    BuildContext context,
-    PdfViewPinchBuilders builders,
-    PdfLoadingState state,
-    WidgetBuilder loadedBuilder,
-    PdfDocument? document,
-    Exception? loadingError,
-  ) {
+      BuildContext context,
+      PdfViewPinchBuilders builders,
+      PdfLoadingState state,
+      WidgetBuilder loadedBuilder,
+      PdfDocument? document,
+      Exception? loadingError,
+      ) {
     final Widget content = () {
       switch (state) {
         case PdfLoadingState.loading:
@@ -511,7 +511,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
     }();
 
     final defaultBuilder =
-        builders as PdfViewPinchBuilders<DefaultBuilderOptions>;
+    builders as PdfViewPinchBuilders<DefaultBuilderOptions>;
     final options = defaultBuilder.options;
 
     return AnimatedSwitcher(
@@ -533,7 +533,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
           scrollControls: InteractiveViewerScrollControls.scrollPans,
           constrained: false,
           alignPanAxis: false,
-          boundaryMargin: const EdgeInsets.all(double.infinity),
+          boundaryMargin: EdgeInsets.symmetric(vertical: docSize.height * 0.5, horizontal: docSize.width * 0.5),
           minScale: 0.25,
           maxScale: 20,
           panEnabled: true,
@@ -556,8 +556,8 @@ class _PdfViewPinchState extends State<PdfViewPinch>
       final m = _controller.value;
       final r = m.row0[0];
       final exposed =
-          Rect.fromLTWH(-m.row0[3], -m.row1[3], viewSize.width, viewSize.height)
-              .inflate(_padding);
+      Rect.fromLTWH(-m.row0[3], -m.row1[3], viewSize.width, viewSize.height)
+          .inflate(_padding);
 
       for (var i = 0; i < _pages.length; i++) {
         final page = _pages[i];
@@ -587,22 +587,22 @@ class _PdfViewPinchState extends State<PdfViewPinch>
                   valueListenable: page._previewNotifier,
                   builder: (context, value, child) => page.preview != null
                       ? Positioned.fill(
-                          child: PdfTexture(textureId: page.preview!.id),
-                        )
+                    child: PdfTexture(textureId: page.preview!.id),
+                  )
                       : Container(),
                 ),
                 ValueListenableBuilder<int>(
                   valueListenable: page._realSizeNotifier,
                   builder: (context, value, child) =>
-                      page.realSizeOverlayRect != null && page.realSize != null
-                          ? Positioned(
-                              left: page.realSizeOverlayRect!.left,
-                              top: page.realSizeOverlayRect!.top,
-                              width: page.realSizeOverlayRect!.width,
-                              height: page.realSizeOverlayRect!.height,
-                              child: PdfTexture(textureId: page.realSize!.id),
-                            )
-                          : Container(),
+                  page.realSizeOverlayRect != null && page.realSize != null
+                      ? Positioned(
+                    left: page.realSizeOverlayRect!.left,
+                    top: page.realSizeOverlayRect!.top,
+                    width: page.realSizeOverlayRect!.width,
+                    height: page.realSizeOverlayRect!.height,
+                    child: PdfTexture(textureId: page.realSize!.id),
+                  )
+                      : Container(),
                 ),
               ],
             ),
