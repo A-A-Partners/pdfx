@@ -532,7 +532,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
           transformationController: _controller,
           scrollControls: InteractiveViewerScrollControls.scrollPans,
           constrained: false,
-          alignPanAxis: false,
+          alignPanAxis: true,
           boundaryMargin: EdgeInsets.symmetric(vertical: docSize.height * 0.5, horizontal: docSize.width * 0.5),
           minScale: 0.25,
           maxScale: 20,
