@@ -17,6 +17,7 @@ export 'package:photo_view/photo_view.dart';
 export 'package:photo_view/photo_view_gallery.dart';
 
 part 'pdf_controller_pinch.dart';
+
 part 'pdf_view_pinch_builders.dart';
 
 /// Widget for viewing PDF documents with pinch to zoom feature
@@ -82,6 +83,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
   Size? _lastViewSize;
   Timer? _realSizeUpdateTimer;
   Size? _docSize;
+  bool _alignPanAxis = true;
   final Map<int, double> _visiblePages = <int, double>{};
 
   late AnimationController _animController;
@@ -100,6 +102,11 @@ class _PdfViewPinchState extends State<PdfViewPinch>
           'PdfViewPinch not supported in Windows, usage PdfView instead');
     }
     _controller._attach(this);
+    _controller.addListener(() {
+
+
+    });
+    // _controller.
     _animController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -389,7 +396,9 @@ class _PdfViewPinchState extends State<PdfViewPinch>
     const fullPurgeDistThreshold = 33;
     const partialRemovalDistThreshold = 8;
 
-    final dpr = MediaQuery.of(context).devicePixelRatio;
+    final dpr = MediaQuery
+        .of(context)
+        .devicePixelRatio;
     final m = _controller.value;
     final r = m.row0[0];
     final exposed = Rect.fromLTWH(
@@ -480,14 +489,12 @@ class _PdfViewPinchState extends State<PdfViewPinch>
     );
   }
 
-  static Widget _builder(
-      BuildContext context,
+  static Widget _builder(BuildContext context,
       PdfViewPinchBuilders builders,
       PdfLoadingState state,
       WidgetBuilder loadedBuilder,
       PdfDocument? document,
-      Exception? loadingError,
-      ) {
+      Exception? loadingError,) {
     final Widget content = () {
       switch (state) {
         case PdfLoadingState.loading:
@@ -529,11 +536,19 @@ class _PdfViewPinchState extends State<PdfViewPinch>
         _reLayout(viewSize);
         final docSize = _docSize ?? const Size(10, 10); // dummy size
         return InteractiveViewer(
+          onInteractionEnd: (details) {
+            bool newAlignPanAxis = _controller.zoomRatio < 1.1;
+            if (newAlignPanAxis != _alignPanAxis) {
+              setState(() {
+                _alignPanAxis = _controller.zoomRatio < 1.1;
+              });
+            }
+          },
           transformationController: _controller,
           scrollControls: InteractiveViewerScrollControls.scrollPans,
           constrained: false,
-          alignPanAxis: true,
-          boundaryMargin: EdgeInsets.symmetric(vertical: docSize.height * 0.5, horizontal: docSize.width * 0.5),
+          alignPanAxis: _alignPanAxis,
+          boundaryMargin: EdgeInsets.symmetric(vertical: docSize.width * 0.5, horizontal: docSize.width * 0.5),
           minScale: 0.25,
           maxScale: 20,
           panEnabled: true,
@@ -585,7 +600,8 @@ class _PdfViewPinchState extends State<PdfViewPinch>
               children: [
                 ValueListenableBuilder<int>(
                   valueListenable: page._previewNotifier,
-                  builder: (context, value, child) => page.preview != null
+                  builder: (context, value, child) =>
+                  page.preview != null
                       ? Positioned.fill(
                     child: PdfTexture(textureId: page.preview!.id),
                   )
