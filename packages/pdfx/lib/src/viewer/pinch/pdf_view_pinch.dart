@@ -102,11 +102,6 @@ class _PdfViewPinchState extends State<PdfViewPinch>
           'PdfViewPinch not supported in Windows, usage PdfView instead');
     }
     _controller._attach(this);
-    _controller.addListener(() {
-
-
-    });
-    // _controller.
     _animController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
